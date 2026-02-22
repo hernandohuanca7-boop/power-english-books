@@ -7,58 +7,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* FONDO CON LOGO MÁS VISIBLE */
         body { 
             background-color: #f0f9ff; 
             background-image: linear-gradient(rgba(240, 249, 255, 0.85), rgba(240, 249, 255, 0.85)), url('logo-libros.PNG');
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
-            background-size: 80% auto; /* Un poco más grande para que resalte */
+            background-size: 80% auto;
         } 
-        
-        #wordFeedback {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            word-break: break-word;
-            margin-top: 2rem;
-        }
-
-        .word-box { display: inline-flex; flex-direction: column; align-items: center; }
+        #wordFeedback { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 2rem; }
+        .word-box { display: inline-flex; flex-direction: column; align-items: center; min-width: 60px; }
         .word-correct { color: #10b981; font-weight: bold; font-size: 1.2rem; }
-        
-        /* ERROR GIGANTE Y POTENTE */
-        .word-incorrect { 
-            color: #ef4444; 
-            font-weight: 900; 
-            font-size: 3rem; /* Aumentado para máximo impacto */
-            text-decoration: underline; 
-            line-height: 1; 
-            text-transform: lowercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .ipa-error { 
-            color: #b91c1c; 
-            font-size: 1.6rem; 
-            font-family: 'serif'; 
-            font-weight: bold;
-            margin-top: 5px; 
-            background: #fee2e2; 
-            padding: 4px 15px; 
-            border-radius: 12px; 
-            border: 2px solid #fecaca;
-        }
-
+        .word-incorrect { color: #ef4444; font-weight: bold; font-size: 1.2rem; text-decoration: underline; }
+        .ipa-tag { color: #1e40af; font-size: 0.9rem; font-family: 'serif'; background: #dbeafe; padding: 2px 6px; border-radius: 6px; margin-top: 4px; font-style: italic; }
+        .recording-active { animation: pulse-red 1.5s infinite; background-color: #dc2626 !important; }
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
             70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .recording-active { animation: pulse-red 1.5s infinite; background-color: #dc2626 !important; }
-        .bot-icon { font-size: 3.5rem; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 font-sans">
@@ -67,34 +34,36 @@
         <div class="bg-white p-3 rounded-3xl mb-4 shadow-lg border border-blue-100">
             <img id="bookLogo" src="logo-libros.PNG" alt="Logo" class="h-20 w-20 object-contain rounded-2xl">
         </div>
-        <h1 class="text-2xl md:text-3xl font-black text-slate-700 tracking-tight text-center uppercase">
+        <h1 class="text-2xl md:text-3xl font-black text-slate-700 text-center uppercase">
             POWER ENGLISH <span class="text-blue-500">PRONUNCIATION</span>
         </h1>
     </header>
 
     <main class="w-full max-w-2xl bg-white/95 backdrop-blur-sm rounded-[3rem] shadow-2xl p-6 md:p-10 space-y-6 border border-white z-10">
         
-        <div id="dailyPhoneme" class="bg-blue-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between border-b-4 border-blue-800">
+        <div id="dailyPhoneme" class="bg-blue-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between">
             <div>
                 <p class="text-[9px] font-black uppercase tracking-tighter opacity-80">Phoneme of the Day</p>
-                <p id="phonemeText" class="text-sm font-medium italic">Cargando...</p>
+                <p id="phonemeText" class="text-sm font-medium italic italic">Cargando...</p>
             </div>
-            <div id="phonemeSymbol" class="text-3xl font-serif bg-white/20 w-12 h-12 flex items-center justify-center rounded-full border border-white/30"></div>
+            <div id="phonemeSymbol" class="text-3xl font-serif bg-white/20 w-12 h-12 flex items-center justify-center rounded-full"></div>
         </div>
 
         <section>
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Selecciona tu EXERCISE:</label>
-            <select id="phraseSelector" class="w-full p-4 text-base md:text-lg font-bold border-2 border-blue-50 rounded-2xl bg-white focus:border-blue-300 outline-none shadow-sm italic text-slate-600 appearance-none"></select>
+            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Selecciona tu EXERCISE:</label>
+            <select id="phraseSelector" class="w-full p-4 text-lg font-bold border-2 border-blue-50 rounded-2xl bg-white focus:border-blue-300 outline-none shadow-sm italic text-slate-600 appearance-none"></select>
         </section>
 
-        <section class="bg-slate-800 rounded-[2.5rem] p-6 md:p-10 text-center shadow-2xl relative">
-            <p id="targetPhrase" class="text-xl md:text-3xl font-medium text-white leading-relaxed mb-8 italic px-2"></p>
+        <section class="bg-slate-800 rounded-[2.5rem] p-6 md:p-8 text-center shadow-2xl relative">
+            <p id="targetPhrase" class="text-xl md:text-2xl font-medium text-white leading-relaxed italic mb-2"></p>
+            <p id="fullIpa" class="text-blue-300 font-serif text-lg mb-6 hidden italic"></p>
+            
             <div class="flex flex-wrap justify-center gap-3">
-                <button onclick="playModel(1)" class="flex items-center gap-2 bg-slate-700 text-white px-5 py-3 rounded-xl hover:bg-blue-600 transition-all border border-slate-600">
-                    <i class="fas fa-play text-blue-400"></i><span class="text-[10px] font-bold uppercase">Normal</span>
+                <button onclick="toggleIpa()" class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-xl hover:bg-slate-600 transition-all border border-slate-600">
+                    <i class="fas fa-eye text-blue-300"></i><span class="text-[9px] font-bold uppercase">Show IPA</span>
                 </button>
-                <button onclick="playModel(0.5)" class="flex items-center gap-2 bg-slate-700 text-white px-5 py-3 rounded-xl hover:bg-amber-600 transition-all border border-slate-600">
-                    <i class="fas fa-turtle text-amber-400"></i><span class="text-[10px] font-bold uppercase">Lento</span>
+                <button onclick="playModel(1)" class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition-all border border-slate-600">
+                    <i class="fas fa-play text-green-400"></i><span class="text-[9px] font-bold uppercase">Listen</span>
                 </button>
             </div>
         </section>
@@ -102,27 +71,21 @@
         <section id="resultContainer" class="hidden animate-in fade-in zoom-in duration-300">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-blue-50/50 rounded-[2rem] p-6 border border-blue-100 text-center">
                 <div class="flex flex-col items-center">
-                    <span id="botEmoji" class="bot-icon animate-bounce">🤖</span>
+                    <span id="botEmoji" class="text-5xl animate-bounce">🤖</span>
                     <p id="fluencyLabel" class="font-black text-blue-800 uppercase text-xs mt-2"></p>
                 </div>
-                <div class="space-y-1 md:border-l border-blue-200 md:pl-6 text-center">
-                    <div class="text-6xl font-black text-blue-600" id="scorePercent">0%</div>
-                    <p id="coachAdvice" class="text-sm text-slate-600 font-medium leading-tight px-2 italic"></p>
+                <div class="space-y-1 md:border-l border-blue-200 md:pl-6">
+                    <div class="text-5xl font-black text-blue-600" id="scorePercent">0%</div>
+                    <p id="coachAdvice" class="text-[10px] text-slate-500 font-bold uppercase tracking-tight"></p>
                 </div>
             </div>
             <div id="wordFeedback"></div>
         </section>
 
-        <section class="flex flex-col gap-4">
-            <button id="btnRecord" onclick="toggleRecording()" class="w-full py-7 md:py-9 rounded-[2.5rem] bg-blue-500 text-white text-2xl md:text-4xl font-black shadow-xl shadow-blue-200 hover:bg-blue-600 active:scale-95 transition-all flex items-center justify-center gap-6">
-                <i class="fas fa-microphone" id="micIcon"></i><span id="btnText">¡HABLAR!</span>
-            </button>
-        </section>
+        <button id="btnRecord" onclick="toggleRecording()" class="w-full py-7 rounded-[2.5rem] bg-blue-500 text-white text-2xl font-black shadow-xl hover:bg-blue-600 active:scale-95 transition-all flex items-center justify-center gap-6">
+            <i class="fas fa-microphone" id="micIcon"></i><span id="btnText">¡HABLAR!</span>
+        </button>
     </main>
-
-    <footer class="mt-8 text-slate-400 font-bold text-[10px] uppercase tracking-widest pb-8 text-center">
-        © 2026 Power English Bot - AI Phonetic Coach
-    </footer>
 
     <script>
         const contenidoLibros = {
@@ -130,21 +93,22 @@
             "2": ["The show must go on, go ahead, make your day, put on a happy face, don't put off until tomorrow what you can do today.", "Peter Piper picked a peck of pickled peppers.", "I will practice football at four o'clock, she has English classes on Mondays.", "Where is located the bakery? The bakery in on the corner of Main street and Summer Street.", "She sells seashells by the seashore.", "Apple: Vitamins and minerals, most popular fruit around the world the apple has fiber, C vitamin and various antioxidants, low in calories counting, apples also are used in recipes, juices and drinks.", "I always study after class, my sister usually gets good scores and she occasionally goes to bed late.", "Technology offers us many conveniences that contribute to a more peaceful life.", "You held me down, but I got up, already brushing off the dust, you hear my voice, your hear that sound like thunder, gonna shake your ground.", "Today, Abby is visiting her grandparents. She loves her grandparents. At this moment, she is sitting on her grandfather's knee. She is listening to a story."]
         };
 
-        const phonemes = [
-            { s: "θ", d: "Pon la lengua entre los dientes (TH). Ej: 'Thunder'" },
-            { s: "ʃ", d: "Sonido de pedir silencio (SH). Ej: 'She'" },
-            { s: "tʃ", d: "Como una 'ch' seca. Ej: 'Teacher'" },
-            { s: "æ", d: "Vocal entre 'a' y 'e'. Ej: 'Apple'" },
-            { s: "ə", d: "Sonido Schwa, muy relajado. Ej: 'Teacher' (final)" }
-        ];
-
-        const phoneticTips = {
-            "teacher": "/ˈtiːtʃə(r)/", "spell": "/spel/", "peppers": "/ˈpepə(r)z/", "thunder": "/ˈθʌndə(r)/",
-            "english": "/ˈɪŋɡlɪʃ/", "apple": "/ˈæpl/", "seashells": "/ˈsiːʃelz/", "seashore": "/ˈsiːʃɔː(r)/",
-            "bakery": "/ˈbeɪkəri/", "tomorrow": "/təˈmɒrəʊ/"
+        const ipaDict = {
+            "good": "/ɡʊd/", "morning": "/ˈmɔːrnɪŋ/", "teacher": "/ˈtiːtʃər/", "friend": "/frend/", "claudia": "/ˈklɔːdiə/",
+            "spell": "/spel/", "english": "/ˈɪŋɡlɪʃ/", "apple": "/ˈæpl/", "thunder": "/ˈθʌndər/", "show": "/ʃoʊ/",
+            "tomorrow": "/təˈmɔːroʊ/", "peter": "/ˈpiːtər/", "piper": "/ˈpaɪpər/", "seashells": "/ˈsiːʃelz/", "bakery": "/ˈbeɪkəri/",
+            "technology": "/tekˈnɑːlədʒi/", "peaceful": "/ˈpiːsfl/", "grandparents": "/ˈɡrænperənts/", "listening": "/ˈlɪsnɪŋ/"
+            // Agregaremos más automáticamente
         };
 
-        let recognition, isRecording = false, startTime;
+        const phonemes = [
+            { s: "θ", d: "Lengua entre los dientes. Ej: 'Thunder'" },
+            { s: "ʃ", d: "Sonido de silencio. Ej: 'She'" },
+            { s: "tʃ", d: "CH seca. Ej: 'Teacher'" },
+            { s: "æ", d: "Entre 'a' y 'e'. Ej: 'Apple'" }
+        ];
+
+        let recognition, isRecording = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             const randomPhoneme = phonemes[Math.floor(Math.random() * phonemes.length)];
@@ -159,45 +123,64 @@
                 const opt = document.createElement('option');
                 opt.value = f; opt.textContent = `EXERCISE ${i+1}`; selector.appendChild(opt);
             });
-            document.getElementById('targetPhrase').innerText = selector.value;
-            selector.onchange = () => { document.getElementById('targetPhrase').innerText = selector.value; document.getElementById('resultContainer').classList.add('hidden'); };
+            updatePhrase();
+            selector.onchange = updatePhrase;
             setupSpeech();
         });
+
+        function updatePhrase() {
+            const val = document.getElementById('phraseSelector').value;
+            document.getElementById('targetPhrase').innerText = val;
+            document.getElementById('fullIpa').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+            
+            // Generar IPA aproximado para el botón Show IPA
+            let fullIpaText = val.toLowerCase().replace(/[.,?]/g,"").split(" ").map(w => ipaDict[w] || `/${w}/`).join(" ");
+            document.getElementById('fullIpa').innerText = fullIpaText;
+        }
+
+        function toggleIpa() {
+            document.getElementById('fullIpa').classList.toggle('hidden');
+        }
 
         function setupSpeech() {
             if (!('webkitSpeechRecognition' in window)) return;
             recognition = new webkitSpeechRecognition();
             recognition.lang = 'en-US';
-            recognition.onstart = () => { isRecording = true; startTime = Date.now(); document.getElementById('btnText').innerText = "ESCUCHANDO..."; document.getElementById('btnRecord').classList.add('recording-active'); };
-            recognition.onresult = (e) => { evaluate(e.results[0][0].transcript, (Date.now() - startTime) / 1000); };
+            recognition.onstart = () => { isRecording = true; document.getElementById('btnText').innerText = "LISTENING..."; document.getElementById('btnRecord').classList.add('recording-active'); };
+            recognition.onresult = (e) => { evaluate(e.results[0][0].transcript); };
             recognition.onend = () => { isRecording = false; document.getElementById('btnText').innerText = "¡HABLAR!"; document.getElementById('btnRecord').classList.remove('recording-active'); };
         }
 
         function toggleRecording() { if (isRecording) recognition.stop(); else { document.getElementById('resultContainer').classList.add('hidden'); recognition.start(); } }
 
-        function evaluate(spoken, duration) {
-            const targetWords = document.getElementById('targetPhrase').innerText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(/\s+/);
-            const spokenWords = spoken.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(/\s+/);
-            let correct = 0, feedbackHTML = "", foundError = false;
+        function evaluate(spoken) {
+            const targetWords = document.getElementById('targetPhrase').innerText.toLowerCase().replace(/[.,?]/g,"").split(/\s+/);
+            const spokenWords = spoken.toLowerCase().split(/\s+/);
+            let correct = 0, feedbackHTML = "";
 
             targetWords.forEach(word => {
-                const ipa = phoneticTips[word] || "";
-                if (spokenWords.includes(word)) {
+                const isCorrect = spokenWords.includes(word);
+                const ipa = ipaDict[word] || `/${word}/`;
+                if (isCorrect) {
                     feedbackHTML += `<div class="word-box"><span class="word-correct">${word}</span></div>`;
                     correct++;
                 } else {
-                    feedbackHTML += `<div class="word-box"><span class="word-incorrect">${word}</span>${ipa ? `<span class="ipa-error">${ipa}</span>` : ''}</div>`;
-                    foundError = true;
+                    feedbackHTML += `<div class="word-box"><span class="word-incorrect">${word}</span><span class="ipa-tag">${ipa}</span></div>`;
                 }
             });
 
             const percent = Math.round((correct / targetWords.length) * 100);
             document.getElementById('scorePercent').innerText = percent + "%";
             document.getElementById('wordFeedback').innerHTML = feedbackHTML;
-            document.getElementById('coachAdvice').innerText = foundError ? "Pay attention to the red words and symbols." : "Perfect pronunciation! You're a pro.";
-            const botEmoji = document.getElementById('botEmoji');
-            botEmoji.innerText = percent >= 90 ? "🚀" : (percent >= 70 ? "🤖" : "⚙️");
             document.getElementById('resultContainer').classList.remove('hidden');
+            
+            // Mensajes de motivación y Robotitos
+            const botEmoji = document.getElementById('botEmoji');
+            const fluencyLabel = document.getElementById('fluencyLabel');
+            if(percent >= 90) { botEmoji.innerText = "🚀"; fluencyLabel.innerText = "Excellent Fluency!"; }
+            else if(percent >= 70) { botEmoji.innerText = "🤖"; fluencyLabel.innerText = "Good Job!"; }
+            else { botEmoji.innerText = "⚙️"; fluencyLabel.innerText = "Keep Trying!"; }
         }
 
         function playModel(speed) { 
